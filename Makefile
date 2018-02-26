@@ -1,6 +1,6 @@
-CFLAGS= -g -Ofast 
+CFLAGS= -g -O3 -std=c99 -fopenmp
 INCLUDES=-I/opt/X11/include
-LDFLAGS=-L/opt/X11/lib -lX11 -lm
+LDFLAGS=-L/opt/X11/lib -lX11 -lm -std=c99 -fopenmp
 
 galsim: galsim.o particle_functions.o tree_functions.o graphics.o
 	gcc -o galsim galsim.o particle_functions.o tree_functions.o graphics.o $(LDFLAGS)
