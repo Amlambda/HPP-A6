@@ -6,7 +6,7 @@
 #include <math.h>
 #include <string.h>
 #include <assert.h>
-
+#include <omp.h>
 
 const double particleRadius = 0.005, particleColor = 0;
 const int windowWidth = 800;
@@ -16,8 +16,8 @@ int main (int argc, char *argv[]) {
   const double L=1, W=1;    // Dimensions of domain in which particles move
 
   // Check command line arguments
-  if(argc != 7) {   // End program if not 5 input arguments (argv[0] is the program name)
-        printf("Error: Expected number of input arguments is 6\n");
+  if(argc != 8) {   // End program if not 5 input arguments (argv[0] is the program name)
+        printf("Error: Expected number of input arguments is 7\n");
         exit(1);
   }
   
@@ -35,6 +35,8 @@ int main (int argc, char *argv[]) {
   printf("theta_max: \t\t%.1f\n", theta_max);
   const int graphics = atoi(argv[6]);         // 1 or 0 meaning graphics on/off
   printf("graphics: \t\t%d\n", graphics);
+  const int nThreads = atoi(argv[7]);         // number of threads
+  printf("nr of threads: \t\t%d\n", nThreads);
   printf("------------------------------------\n\n");
 
   //COPIED CODE TO READ FILE
@@ -131,7 +133,9 @@ int main (int argc, char *argv[]) {
     }
     
     // /* Update position of particle i with respect to all other particles */
-    for (int i = 0; i < N; i++) {
+#pragma omp parallel for num_threads(nThreads)  
+   for (int i = 0; i < N; i++) {
+      //printf("Thread rank: %d\n", omp_get_thread_num());
       target = &particles[i];
       // target->xVel = get_vel_1D(xAcc[i], target->xVel, delta_t);
       // target->yVel = get_vel_1D(yAcc[i], target->yVel, delta_t);
